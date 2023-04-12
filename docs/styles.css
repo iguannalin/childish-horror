@@ -1,0 +1,35 @@
+body {
+    margin: 0 auto;
+    font-size: 48px;
+    color: #FFC107;
+    background-color: #006F23;
+    /*width: 700px;*/
+}
+h1, h2 {
+    color: black;
+}
+
+.start-button-container {
+    height: 125px;
+}
+
+.ninetyfive-button {
+    border: none;
+    width: auto;
+    background-repeat: no-repeat;
+    background-position: 0.25rem;
+    cursor: pointer;
+    height: 1.70rem;
+    box-shadow: -2px -2px #e0dede, -2px 0 #e0dede, 0 -2px #e0dede, -4px -4px white, -4px 0 white, 0 -4px white, 2px 2px #818181, 0 2px #818181, 2px 0 #818181, 2px -2px #e0dede, -2px 2px #818181, -4px 2px white, -4px 4px black, 4px 4px black, 4px 0 black, 0 4px black, 2px -4px white, 4px -4px black;
+    background: #C3C3C3;
+    margin: 0;
+    padding: 4px;
+    font-family: Arial, sans-serif;
+    user-select: none;
+    font-weight: 300;
+    -webkit-font-smoothing: none;
+}
+
+.ninetyfive-button:hover {
+    background: #929292;
+}
