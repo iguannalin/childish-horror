@@ -11,71 +11,23 @@ let sizes = {
     regular: 24,
     large: 48
 };
-
-let prompt = "write a text-based horror adventure prompt, with 2-3 choices numbered";
-let test = `write a text-based horror adventure prompt, with 2-3 choices numbered
-
-You wake up in a strange room with no windows and one door. 
-
-	1	Examine the room for clues
-2. Try the door
-3. Scream for help
-
-Try the door
-You cautiously approach the door and reach for the handle. The door is locked. 
-
-	1	Look for a key
-2. Try to break down the door
-3. Scream for help
-
-Scream for help
-You call out for help, but the only response is a deep, menacing laugh from somewhere in the room. 
-
-	1	Hide
-2. Search the room for the source of the laugh
-3. Try to break down the door
-
-Search the room for the source of the laugh
-You slowly move around the room, searching for the source of the laugh. You finally find it: a tall figure in a dark cloak standing in the corner of the room. 
-
-	1	Run for the door
-2. Talk to the figure
-3. Attack the figure
-
-Scream for help
-You call out for help, but the only response is a deep, menacing laugh from somewhere in the room. 
-
-	1	Hide
-2. Search the room for the source of the laugh
-3. Try to break down the door
-
-Search the room for the source of the laugh
-You slowly move around the room, searching for the source of the laugh. You finally find it: a tall figure in a dark cloak standing in the corner of the room. 
-`;
-let choices = {};
 let incoming;
 let storyText;
 let chindex = 1; // character index
 let frindex = 30; // frame index
 let isLoading = true;
 let isKeyPressed = false;
-let isTesting = false;
+let isTesting = true;
 let isGlitching = 7;
-let saveButton, refreshButton, readmeButton;
-let iconDescriptions = ["Save", "Replay", "About"];
-let instructions = "Use the 1, 2, or 3 keys on the keyboard to select a choice when they appear.";
+let refreshButton, readmeButton;
+let iconDescriptions = ["Replay", "About"];
+let singleTap = true;
+
+let prompt = "write me an artist statement to apply to donald glover's ui engineer role";
 
 function preload() {
     getAICompletion();
     // Windows icons from https://win98icons.alexmeub.com/
-    saveButton = createImg("https://win98icons.alexmeub.com/icons/png/printer-0.png", "printer icon");
-    saveButton.attribute("title", "Click to email adventure as text file.");
-    saveButton.class("ninetyfive-button");
-    saveButton.mousePressed(() => {
-        // window.open('mailto:test@example.com?subject=subject&body=body');
-        saveStrings(storyText.replace(prompt, "ai-loves-horror").split("/n"), 'ai-loves-horror-adventure.txt');
-    });
-
     refreshButton = createImg("https://win98icons.alexmeub.com/icons/png/netmeeting-0.png", "refresh icon");
     refreshButton.attribute("title", "Click to replay.");
     refreshButton.class("ninetyfive-button");
@@ -84,13 +36,13 @@ function preload() {
     });
 
     readmeButton = createImg("https://win98icons.alexmeub.com/icons/png/file_question.png", "readme icon");
-    readmeButton.attribute("title", "Click to read more about this project.");
+    readmeButton.attribute("title", "Click to read more from this arist.");
     readmeButton.class("ninetyfive-button");
     readmeButton.mousePressed(() => {
-        open("https://iguannalin.github.io/ai-loves-horror/about.html");
+        open("https://annaylin.com/");
     });
 
-    [saveButton, refreshButton, readmeButton].forEach((btn) => { btn.hide(); });
+    [refreshButton, readmeButton].forEach((btn) => { btn.hide(); });
 }
 
 function setup() {
@@ -120,61 +72,79 @@ function draw() {
     let padding = width / 5;
     let pWidth = width - padding;
     let pHeight = height - padding;
-    let story = storyText.replace(prompt, instructions);
+    let story = storyText;
+    //
+    // if (!storyText || isLoading) {
+    //     fill('#FFC107');
+    //     textSize(12);
+    //     text("Loading...", 50, 100);
+    //     return;
+    // }
+    // if (random() > 0.75) {
+    //     background(255, 255, 255, 0.3);
+    // } else {
+    //     clear();
+    // }
+    //
     textWrap(WORD);
     textFont("Times New Roman");
     textSize(sizes.large);
+    // textSize(30);
+    stroke(10);
     textAlign(LEFT, BOTTOM);
     text(story.substring(0, chindex), 60, 0, width > 600 ? pWidth : width - 60, pHeight);
     if (chindex < story.length) {
         chindex++;
         drawGlitch();
-        frameRate(random(10, frindex += 0.2));
+        frameRate(random(frindex-10, frindex += 0.2));
     }
-    if (Object.keys(choices).length < 1 || isTesting) {
+    if (isTesting && chindex >= story.length - 200) {
         push();
-            fill(colors.accent);
-            textSize(sizes.regular);
-            textAlign(CENTER);
-            translate(width/2, height - 70);
-            text("\nThere are no choices left.", 0, 0);
+        fill(colors.accent);
+        textSize(sizes.regular);
+        textAlign(CENTER);
+        translate(width/2, height - 70);
         pop();
         let btnX = 150;
-        let btns = [saveButton, refreshButton, readmeButton];
+        let btns = [refreshButton, readmeButton];
         push();
-            fill(colors.accent);
-            textSize(sizes.small);
-            textAlign(CENTER);
-            for (let i = 0; i < 3; i++) {
-                let btn = btns[i];
-                btn.position(((width*3)/5) + btnX, height - 100);
-                text(iconDescriptions[i], ((width*3)/5) + btnX + 10, height - 30);
-                btnX += 90;
-                btn.show();
-            }
+        fill(colors.accent);
+        textSize(sizes.small);
+        textAlign(CENTER);
+        for (let i = 0; i < 2; i++) {
+            let btn = btns[i];
+            btn.position(((width*3)/5) + btnX, height - 100);
+            text(iconDescriptions[i], ((width*3)/5) + btnX + 15, height - 30);
+            btnX += 90;
+            btn.show();
+        }
         pop();
     }
-    // frameRate(100);
 }
 
 function getAICompletion() {
     isLoading = true;
     if (isTesting) {
-        incoming = test;
+        incoming = prompt + '\n\n' + `As an artist with a passion for technology and innovation, I am excited to apply for the UI Engineer role with Donald Glover's team. Throughout my career, I have honed my skills in design and development, combining my artistic sensibilities with a deep understanding of user experience and functionality.
+
+My approach to UI engineering is informed by my background in the arts, which has instilled in me a keen eye for detail and a drive to create beautiful, intuitive interfaces. I believe that great design is not just about aesthetics, but about creating an experience that feels seamless and effortless for the user.
+
+At the same time, I recognize the importance of technology in shaping the world around us. In my work as a UI engineer, I am always seeking out new tools and techniques to improve the user experience and create cutting-edge interfaces that push the boundaries of what is possible.
+
+Ultimately, I am driven by a desire to create work that is both functional and inspiring, bridging the gap between art and technology to create experiences that delight and engage users. I believe that Donald Glover's team embodies this same spirit of innovation and creativity, and I am eager to bring my skills and experience to the table to help drive the team forward.`;
+
         getChoices(storyText ? incoming.substring(storyText.length) : incoming); // get choices from most recent text
         storyText = incoming;
-        setTimeout(() => {
-            isLoading = false;
-            clearTimeout();
-        }, 500);
+        isLoading = false;
         return;
     }
+
     fetch("https://api.openai.com/v1/completions", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             Authorization:
-                `Bearer sess-LIrnnnRj9XW9C1tuVRdCiKZVCSJYCle2p9WaCpQK`,
+                "Bearer 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",
         },
         body: JSON.stringify({
             model: "text-davinci-003",
@@ -196,65 +166,47 @@ function getAICompletion() {
             getChoices(incoming); // get choices from most recent text
             storyText = _text;
             isLoading = false;
-            isKeyPressed = false;
             // print({ storyText });
         });
 }
 
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
+function mousePressed() {
+    if (singleTap) {
+        frindex = 200;
+        return singleTap = !singleTap;
+    }
+    chindex = storyText.length;
 }
 
 function keyPressed() {
     let newPrompt;
-    if (isLoading || isKeyPressed) return;
     switch (keyCode) {
         case 49:
-            if (choices[1]) newPrompt = choices[1];
-            break;
-        case 97:
             if (choices[1]) newPrompt = choices[1];
             break;
         case 50:
             if (choices[2]) newPrompt = choices[2];
             break;
-        case 98:
-            if (choices[2]) newPrompt = choices[2];
-            break;
         case 51:
             if (choices[3]) newPrompt = choices[3];
-            else alert("please choose a valid choice");
-            break;
-        case 99:
-            if (choices[3]) newPrompt = choices[3];
-            else alert("please choose a valid choice");
+            else alert("choose a valid choice between 1-3");
             break;
         default:
             break;
     }
     // print(prompt);
-    if (newPrompt) { // if user chose a valid choice, add choice to current story and send it back to API
-        isKeyPressed = true;
+    if (newPrompt) {
         storyText += "\n\n" + newPrompt + "\n";
-        push();
-            fill(colors.accent);
-            textSize(sizes.regular);
-            textAlign(CENTER);
-            translate(width/2, height - 75);
-            text(newPrompt, 0, 0);
-        pop();
         getAICompletion();
     }
 }
 
 function getChoices(inText) {
     if (!inText) return;
-    choices = {};
-    let spl = inText.split(/\n[1-3][.]*/g); // capture the string after [1-3].
+    let spl = inText.split(/\n[1-3][.]*/g);
     for (let i = 1; i < 4; i++) {
-        if (spl[i]) choices[i] = spl[i]; // if it exists assign it to choices
+        if (spl[i]) choices[i] = spl[i];
     }
-    if (!choices[1] || !choices[2]) location.reload(); // if there are no choices 1-2, reload sketch
     // print({ choices });
 }
 
