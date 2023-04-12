@@ -1,16 +1,17 @@
 let colors = {
-    text: '#FFC107',
+    text: 'black',
     accent: '#FFC107',
     background: '#006F23',
-    overlay: 'rgba(0, 111, 35, 0.1)',
-    // overlay: '255, 255, 255, 0.3',
+    overlay: 'rgba(0, 111, 35, 0.1)'
 };
 
 let sizes = {
     small: 20,
-    regular: 24,
-    large: 48
+    regular: 30,
+    large: 52
 };
+
+let vtfont;
 let incoming;
 let storyText;
 let chindex = 1; // character index
@@ -27,6 +28,7 @@ let prompt = "write me an artist statement to apply to donald glover's ui engine
 
 function preload() {
     getAICompletion();
+    vtfont = loadFont('assets/VT323-Regular.ttf');
     // Windows icons from https://win98icons.alexmeub.com/
     refreshButton = createImg("https://win98icons.alexmeub.com/icons/png/netmeeting-0.png", "refresh icon");
     refreshButton.attribute("title", "Click to replay.");
@@ -73,24 +75,12 @@ function draw() {
     let pWidth = width - padding;
     let pHeight = height - padding;
     let story = storyText;
-    //
-    // if (!storyText || isLoading) {
-    //     fill('#FFC107');
-    //     textSize(12);
-    //     text("Loading...", 50, 100);
-    //     return;
-    // }
-    // if (random() > 0.75) {
-    //     background(255, 255, 255, 0.3);
-    // } else {
-    //     clear();
-    // }
-    //
+
     textWrap(WORD);
-    textFont("Times New Roman");
+    textFont(vtfont);
     textSize(sizes.large);
-    // textSize(30);
-    stroke(10);
+    strokeWeight(.5);
+    stroke('blue');
     textAlign(LEFT, BOTTOM);
     text(story.substring(0, chindex), 60, 0, width > 600 ? pWidth : width - 60, pHeight);
     if (chindex < story.length) {
