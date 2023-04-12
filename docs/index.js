@@ -1,5 +1,5 @@
 let colors = {
-    text: 'black',
+    text: '#FFC107',
     accent: '#FFC107',
     background: '#006F23',
     overlay: 'rgba(0, 111, 35, 0.1)',
@@ -14,14 +14,14 @@ let sizes = {
 let incoming;
 let storyText;
 let chindex = 1; // character index
-let frindex = 30; // frame index
+let frindex = 50; // frame index
 let isLoading = true;
 let isKeyPressed = false;
 let isTesting = true;
 let isGlitching = 7;
 let refreshButton, readmeButton;
 let iconDescriptions = ["Replay", "About"];
-let singleTap = true;
+let singleTap = 0;
 
 let prompt = "write me an artist statement to apply to donald glover's ui engineer role";
 
@@ -170,13 +170,16 @@ Ultimately, I am driven by a desire to create work that is both functional and i
         });
 }
 
-function mousePressed() {
-    if (singleTap) {
+function tapped() {
+    if (singleTap < 2) {
         frindex = 200;
-        return singleTap = !singleTap;
+        return singleTap++;
     }
     chindex = storyText.length;
 }
+
+mousePressed = () => tapped();
+mouseClicked = () => tapped();
 
 function keyPressed() {
     let newPrompt;
